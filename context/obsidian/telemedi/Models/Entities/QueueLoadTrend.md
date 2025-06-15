@@ -1,0 +1,16 @@
+- `id`: int - Klucz główny, automatycznie generowany
+- `queue`: ManyToOne do [[Queue]] - Kolejka, której dotyczy trend
+- `year`: int - Rok
+- `quarter`: int - Kwartał (1-4)
+- `calculationDate`: date - Data przeprowadzenia obliczeń trendu
+- `metricName`: string(255) - Nazwa metryki (np. "średni czas obsługi", "procent udanych połączeń")
+- `metricValue`: string(255) - Wartość metryki
+- `additionalDescription`: text - Dodatkowy opis (opcjonalny)
+- **Grupy serializacji**: queue_load_trend:read
+- `queue_id`: int - Klucz obcy do Queue (nie może być null)
+- `year`: int - Rok, którego dotyczy trend
+- `quarter`: int - Kwartał, którego dotyczy trend
+- `calculationDate`: Date - Data wykonania kalkulacji
+- `metricName`: string (255) - Nazwa metryki
+- `metricValue`: string (255) - Wartość metryki
+- `additionalDescription`: text - Dodatkowy opis (opcjonalny)

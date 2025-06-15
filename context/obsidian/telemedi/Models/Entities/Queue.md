@@ -1,0 +1,18 @@
+- `id`: int - Klucz główny, automatycznie generowany
+- `queueName`: string (255) - Nazwa kolejki (unikalna)
+- `priority`: int - Priorytet kolejki (niższa wartość = wyższy priorytet)
+- `description`: text - Opis kolejki
+- `targetHandledCallsPerSlot`: int - Oczekiwana liczba obsłużonych połączeń na slot
+- `targetSuccessRatePercentage`: decimal(5,2) - Oczekiwany procent pomyślnych połączeń
+- **Relacje:**
+    - `agents`: ManyToMany do [[Agent]] - Agenci, którzy mogą obsługiwać tę kolejkę
+    - `schedules`: OneToMany do [[Schedule]] - Wpisy w grafiku dla tej kolejki
+    - `agentActivityLogs`: OneToMany do [[AgentActivityLog]] - Historia aktywności w kolejce
+    - `queueLoadTrends`: OneToMany do [[QueueLoadTrend]] - Trendy obciążenia kolejki
+- **Grupy serializacji:** queue:read, schedule:read
+- `priority`: int - Priorytet kolejki (opcjonalny)
+- `description`: text - Opis kolejki (opcjonalny)
+- `targetHandledCallsPerSlot`: int - Docelowa liczba obsłużonych połączeń na slot czasowy (opcjonalny)
+- `targetSuccessRatePercentage`: decimal (5,2) - Docelowy procent połączeń zakończonych sukcesem (opcjonalny)
+- **Relacje:**
+    - `agents`: ManyToMany do [[Agent]] - Agenci przypisani do tej kolejki

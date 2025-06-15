@@ -1,0 +1,23 @@
+- `id`: int - Klucz główny, automatycznie generowany
+- `agent`: ManyToOne do [[Agent]] - Agent przypisany do slotu
+- `queue`: ManyToOne do [[Queue]] - Kolejka, do której przypisany jest wpis
+- `scheduleDate`: date - Data w grafiku
+- `timeSlotStart`: time - Czas rozpoczęcia slotu
+- `timeSlotEnd`: time - Czas zakończenia slotu
+- `entryStatus`: string(50) - Status wpisu ('scheduled', 'completed', 'cancelled')
+- `createdAt`: datetime - Data utworzenia wpisu
+- `updatedAt`: datetime - Data aktualizacji wpisu (automatyczna aktualizacja)
+- **Grupy serializacji**: schedule:read
+- **Metody pomocnicze**: 
+  - `getTitle()`: Tytuł dla widoku kalendarza
+  - `getStart()`: Data i czas rozpoczęcia dla kalendarza
+  - `getEnd()`: Data i czas zakończenia dla kalendarza
+  - `getResourceId()`: ID zasobu (agenta) dla kalendarza
+- `agent_id`: int - Klucz obcy do Agent (nie może być null)
+- `queue_id`: int - Klucz obcy do Queue (nie może być null)
+- `scheduleDate`: Date - Data, na którą zaplanowano slot
+- `timeSlotStart`: Time - Godzina rozpoczęcia slotu
+- `timeSlotEnd`: Time - Godzina zakończenia slotu
+- `entryStatus`: string (50) - Status wpisu w grafiku
+- `createdAt`: DateTime - Data utworzenia wpisu (automatycznie ustawiana)
+- `updatedAt`: DateTime - Data ostatniej aktualizacji wpisu (automatycznie ustawiana)

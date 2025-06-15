@@ -1,0 +1,10 @@
+- `id`: int - Klucz główny, automatycznie generowany
+- `fullName`: string (255) - Imię i nazwisko agenta
+- `email`: string (255) - Adres email agenta (unikalny, opcjonalny)
+- `defaultAvailabilityPattern`: json - Domyślny wzorzec dostępności agenta
+- `isActive`: bool - Czy agent jest aktywny
+- **Relacje:**
+    - [[Queue]]: ManyToMany do Queue - Kolejki, które agent może obsługiwać
+    - `agentActivityLogs`: OneToMany do [[AgentActivityLog]] - Historia aktywności agenta
+    - `agentAvailabilityExceptions`: OneToMany do [[AgentAvailabilityException]] - Wyjątki w dostępności (np. urlopy)
+    - `schedules`: OneToMany do [[Schedule]] - Wpisy w grafiku- **Grupy serializacji:** agent:read, schedule:read

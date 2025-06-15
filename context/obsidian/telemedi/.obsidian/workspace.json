@@ -1,0 +1,203 @@
+{
+  "main": {
+    "id": "80198c563664b3db",
+    "type": "split",
+    "children": [
+      {
+        "id": "1a8eb794bc893dba",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "386966df6a66488e",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f6f6d30c4cbee13a",
+    "type": "split",
+    "children": [
+      {
+        "id": "eede142aa415d69c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f0ca5f399d818f85",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "ae26346cebfd59a0",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "911d2a13f318293a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 228.5
+  },
+  "right": {
+    "id": "d8902da200b7b0a8",
+    "type": "split",
+    "children": [
+      {
+        "id": "23cfe4bff7834c19",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b4036f5f9d97d764",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "62007a21f4946507",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "74a5ce0d6db3446a",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "6dd9584c69d937b2",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "386966df6a66488e",
+  "lastOpenFiles": [
+    "Untitled",
+    "Struktura_impl.canvas",
+    "Struktura.canvas",
+    "Services/SlotProposalService.md",
+    "Services/ScheduleService.md",
+    "Services/QueueService.md",
+    "Services/ApiExceptionSubscriber.md",
+    "Services/AgentService.md",
+    "Controlers/ScheduleController/public getCalendarView.md",
+    "Untitled 1.md",
+    "Models/A_Models.md",
+    "Models/Repositories/A_Repositories.md",
+    "Models/Repositories/AgentRepository.md",
+    "index.md",
+    "Services/A_Services.md",
+    "Controlers/A_Controllers.md",
+    "Models/Entities/Schedule.md",
+    "Models/Entities/QueueLoadTrend.md",
+    "Models/Entities/Queue.md",
+    "Models/Entities/AgentAvailabilityException.md",
+    "Models/Entities/AgentActivityLog.md",
+    "Models/Entities/Agent.md",
+    "Models/Entities/A_Entities.md",
+    "Controlers/QueueController/public getQueues.md",
+    "Untitled.md",
+    "Controlers/QueueController/QueueControler.md",
+    "Controlers/ScheduleController/ScheduleController.md",
+    "Controlers/ScheduleController",
+    "Controlers/QueueController",
+    "Models/Repositories",
+    "Models/Entities",
+    "Services",
+    "Models",
+    "Controlers",
+    "Cheatsheet.md"
+  ]
+}

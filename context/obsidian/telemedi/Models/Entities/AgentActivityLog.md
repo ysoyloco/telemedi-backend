@@ -1,0 +1,16 @@
+- `id`: int - Klucz główny, automatycznie generowany
+- `agent`: ManyToOne do [[Agent]] - Agent, którego dotyczy log aktywności
+- `queue`: ManyToOne do [[Queue]] - Kolejka, której dotyczy aktywność
+- `activityStartDatetime`: datetime - Data i czas rozpoczęcia aktywności
+- `activityEndDatetime`: datetime - Data i czas zakończenia aktywności
+- `wasSuccessful`: bool - Czy aktywność zakończyła się sukcesem
+- `activityReferenceId`: string(255) - Opcjonalny identyfikator referencyjny aktywności
+- **Grupy serializacji**: agent_activity_log:read
+- **Metody pomocnicze**:
+  - `getDurationInSeconds()`: Oblicza czas trwania aktywności w sekundach
+- `agent_id`: int - Klucz obcy do Agent (nie może być null)
+- `queue_id`: int - Klucz obcy do Queue (nie może być null)
+- `activityStartDatetime`: DateTime - Data i czas rozpoczęcia aktywności
+- `activityEndDatetime`: DateTime - Data i czas zakończenia aktywności
+- `wasSuccessful`: bool - Czy aktywność zakończyła się sukcesem
+- `activityReferenceId`: string (255) - Opcjonalny identyfikator referencyjny aktywności

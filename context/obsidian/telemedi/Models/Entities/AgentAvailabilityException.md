@@ -1,0 +1,10 @@
+- `id`: int - Klucz główny, automatycznie generowany
+- `agent`: ManyToOne do [[Agent]] - Agent, którego dotyczy wyjątek dostępności
+- `unavailableDatetimeStart`: datetime - Data i czas rozpoczęcia niedostępności
+- `unavailableDatetimeEnd`: datetime - Data i czas zakończenia niedostępności
+- **Grupy serializacji**: agent_availability_exception:read
+- **Metody pomocnicze**:
+  - `isDatetimeUnavailable()`: Sprawdza, czy dany czas jest objęty wyjątkiem
+- `agent_id`: int - Klucz obcy do Agent (nie może być null)
+- `unavailableDatetimeStart`: DateTime - Początek okresu niedostępności (opcjonalny)
+- `unavailableDatetimeEnd`: DateTime - Koniec okresu niedostępności (opcjonalny)

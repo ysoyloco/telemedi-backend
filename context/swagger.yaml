@@ -1,0 +1,479 @@
+openapi: 3.0.0
+info:
+  title: API Systemu Grafikowania Call Center (Prototyp)
+  version: v1.0.0
+  description: Uproszczone API dla prototypu aplikacji do grafikowania agentów Call Center.
+
+servers:
+  - url: /api
+    description: Główny serwer API
+
+tags:
+  - name: Queues
+    description: Operacje związane z kolejkami
+  - name: Schedules
+    description: Zarządzanie grafikiem i propozycjami
+  - name: Helper Endpoints
+    description: Endpointy pomocnicze dla UI
+
+components:
+  schemas:
+    Queue:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: ID kolejki
+          example: 1
+        queue_name:
+          type: string
+          description: Nazwa kolejki
+          example: "Sprzedaż VIP"
+        priority:
+          type: integer
+          format: int32
+          description: Priorytet kolejki
+          example: 1
+
+    ScheduleEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: ID wpisu w grafiku
+          example: 101
+        agent_id:
+          type: integer
+          format: int32
+          description: ID agenta
+          example: 1
+        agent_full_name:
+          type: string
+          description: Imię i nazwisko agenta
+          example: "Jan Kowalski"
+        queue_id:
+          type: integer
+          format: int32
+          description: ID kolejki
+          example: 1
+        schedule_date:
+          type: string
+          format: date
+          description: Data grafiku
+          example: "2025-06-10"
+        time_slot_start:
+          type: string
+          format: time # W MySQL to TIME, ale dla API może być string HH:MM:SS
+          description: Godzina rozpoczęcia slotu
+          example: "09:00:00"
+        time_slot_end:
+          type: string
+          format: time
+          description: Godzina zakończenia slotu
+          example: "10:00:00"
+        entry_status:
+          type: string
+          description: Status wpisu w grafiku
+          example: "Potwierdzony_Przez_Managera"
+        # Pola dla React Big Calendar
+        title:
+          type: string
+          description: Tekst wyświetlany na wydarzeniu w kalendarzu
+          example: "Jan K. (Sprzedaż VIP)"
+        start:
+          type: string
+          format: date-time # Pełna data i czas rozpoczęcia (UTC lub z offsetem)
+          description: Data i czas rozpoczęcia dla kalendarza
+          example: "2025-06-10T09:00:00Z"
+        end:
+          type: string
+          format: date-time # Pełna data i czas zakończenia
+          description: Data i czas zakończenia dla kalendarza
+          example: "2025-06-10T10:00:00Z"
+        resourceId:
+          type: integer
+          format: int32
+          nullable: true
+          description: Opcjonalne ID zasobu (np. agent_id) dla kalendarza
+          example: 1
+          
+    CalendarViewResponse:
+      type: object
+      properties:
+        queue_info:
+          $ref: '#/components/schemas/Queue'
+        schedule_entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleEntry'
+
+    SlotInfo:
+      type: object
+      properties:
+        queue_id:
+          type: integer
+          example: 1
+        queue_name:
+          type: string
+          example: "Sprzedaż VIP"
+        slot_start_datetime:
+          type: string
+          format: date-time
+          example: "2025-06-10T09:00:00Z"
+        slot_end_datetime:
+          type: string
+          format: date-time
+          example: "2025-06-10T10:00:00Z"
+
+    SuggestedAgent:
+      type: object
+      properties:
+        agent_id:
+          type: integer
+          example: 1
+        full_name:
+          type: string
+          example: "Jan Kowalski"
+        is_available:
+          type: boolean
+          example: true
+        availability_conflict_reason:
+          type: string
+          nullable: true
+          example: "Na urlopie"
+        simple_performance_metric:
+          type: string
+          nullable: true
+          example: "OK"
+
+    SlotProposalsResponse:
+      type: object
+      properties:
+        slot_info:
+          $ref: '#/components/schemas/SlotInfo'
+        suggested_agents:
+          type: array
+          items:
+            $ref: '#/components/schemas/SuggestedAgent'
+
+    ScheduleInput:
+      type: object
+      required:
+        - agent_id
+        - queue_id
+        - schedule_date
+        - time_slot_start
+        - time_slot_end
+        - entry_status
+      properties:
+        agent_id:
+          type: integer
+        queue_id:
+          type: integer
+        schedule_date:
+          type: string
+          format: date
+        time_slot_start:
+          type: string
+          format: time # HH:MM:SS
+        time_slot_end:
+          type: string
+          format: time # HH:MM:SS
+        entry_status:
+          type: string
+
+    ScheduleUpdateInput:
+      type: object
+      properties:
+        agent_id: # Opcjonalne, jeśli zmieniamy agenta
+          type: integer
+        queue_id: # Opcjonalne
+          type: integer
+        schedule_date: # Opcjonalne, jeśli można zmienić datę
+          type: string
+          format: date
+        time_slot_start: # Opcjonalne
+          type: string
+          format: time
+        time_slot_end: # Opcjonalne
+          type: string
+          format: time
+        entry_status: # Opcjonalne, jeśli zmieniamy status
+          type: string
+
+    GenerateScheduleInput:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+          description: Data początkowa okresu do wygenerowania grafiku.
+        end_date:
+          type: string
+          format: date
+          description: Data końcowa okresu.
+        queue_ids:
+          type: array
+          items:
+            type: integer
+          description: Lista ID kolejek do zaplanowania (pusta/null dla wszystkich).
+          nullable: true
+        overwrite_existing_proposals:
+          type: boolean
+          description: Czy nadpisać istniejące propozycje systemowe.
+          default: false
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Ogólny opis błędu.
+        reason_code:
+          type: string
+          nullable: true
+          description: Kod błędu ułatwiający identyfikację problemu.
+        message:
+          type: string
+          description: Szczegółowy komunikat błędu.
+
+  parameters:
+    ScheduleEntryIdPath:
+      name: schedule_entry_id
+      in: path
+      required: true
+      description: ID wpisu w grafiku
+      schema:
+        type: integer
+        format: int32
+    StartDateParam:
+      name: start_date
+      in: query
+      required: true
+      description: Data początkowa (YYYY-MM-DD)
+      schema:
+        type: string
+        format: date
+    EndDateParam:
+      name: end_date
+      in: query
+      required: true
+      description: Data końcowa (YYYY-MM-DD)
+      schema:
+        type: string
+        format: date
+    QueueIdParam:
+      name: queue_id
+      in: query
+      required: true
+      description: ID kolejki
+      schema:
+        type: integer
+        format: int32
+    SlotStartDateTimeParam:
+      name: slot_start_datetime
+      in: query
+      required: true
+      description: Pełna data i czas rozpoczęcia slotu (ISO 8601)
+      schema:
+        type: string
+        format: date-time
+    SlotEndDateTimeParam:
+      name: slot_end_datetime
+      in: query
+      required: true
+      description: Pełna data i czas zakończenia slotu (ISO 8601)
+      schema:
+        type: string
+        format: date-time
+
+paths:
+  /queues:
+    get:
+      tags:
+        - Queues
+      summary: Pobiera listę kolejek
+      description: Zwraca listę wszystkich dostępnych kolejek, posortowanych domyślnie według priorytetu.
+      parameters:
+        - name: sort_by
+          in: query
+          required: false
+          description: Kryterium sortowania (np. priority:asc)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sukces, lista kolejek
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Queue'
+
+  /calendar-view:
+    get:
+      tags:
+        - Schedules
+      summary: Pobiera dane dla widoku kalendarza
+      description: Zwraca istniejące wpisy grafiku dla określonego zakresu dat i kolejki.
+      parameters:
+        - $ref: '#/components/parameters/StartDateParam'
+        - $ref: '#/components/parameters/EndDateParam'
+        - $ref: '#/components/parameters/QueueIdParam'
+      responses:
+        '200':
+          description: Sukces, dane kalendarza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarViewResponse'
+        '400':
+          description: Błędne parametry żądania
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /slot-proposals:
+    get:
+      tags:
+        - Schedules
+        - Helper Endpoints
+      summary: Pobiera propozycje agentów dla wybranego slotu
+      description: Zwraca listę agentów, którzy mogliby pracować w danym slocie na danej kolejce, wraz z informacją o ich dostępności.
+      parameters:
+        - $ref: '#/components/parameters/QueueIdParam'
+        - $ref: '#/components/parameters/SlotStartDateTimeParam'
+        - $ref: '#/components/parameters/SlotEndDateTimeParam'
+      responses:
+        '200':
+          description: Sukces, lista propozycji agentów
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotProposalsResponse'
+        '400':
+          description: Błędne parametry żądania
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /schedules:
+    post:
+      tags:
+        - Schedules
+      summary: Tworzy nowy wpis w grafiku
+      description: Manager przypisuje agenta do slotu. Backend waliduje możliwość przypisania.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleInput'
+      responses:
+        '201':
+          description: Utworzono wpis w grafiku
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          description: Błąd walidacji danych wejściowych
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Konflikt (np. agent niedostępny, już zaplanowany)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /schedules/{schedule_entry_id}:
+    put:
+      tags:
+        - Schedules
+      summary: Aktualizuje istniejący wpis w grafiku
+      description: Manager modyfikuje istniejący wpis (np. zmienia agenta, status).
+      parameters:
+        - $ref: '#/components/parameters/ScheduleEntryIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleUpdateInput'
+      responses:
+        '200':
+          description: Zaktualizowano wpis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          description: Błąd walidacji danych wejściowych
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Wpis grafiku nie znaleziony
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Konflikt (np. nowy agent niedostępny)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Schedules
+      summary: Usuwa wpis z grafiku
+      description: Manager usuwa istniejący wpis.
+      parameters:
+        - $ref: '#/components/parameters/ScheduleEntryIdPath'
+      responses:
+        '204':
+          description: Usunięto wpis (brak zawartości)
+        '404':
+          description: Wpis grafiku nie znaleziony
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /schedules/generate:
+    post:
+      tags:
+        - Schedules
+      summary: Uruchamia generowanie propozycji grafiku (mock/uproszczone)
+      description: Prototypowy endpoint do uruchomienia bardzo uproszczonej logiki generowania grafiku lub zwrócenia mockowych danych.
+      requestBody:
+        required: false # Dla prototypu może być bez body, lub z prostym
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateScheduleInput'
+      responses:
+        '200':
+          description: Sukces, propozycja grafiku (może być pusta lub zawierać mockowe dane)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEntry'
+        '501':
+          description: Funkcjonalność nie zaimplementowana (jeśli tylko mock)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

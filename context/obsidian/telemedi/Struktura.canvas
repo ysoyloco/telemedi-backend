@@ -1,0 +1,37 @@
+{
+	"nodes":[
+		{"id":"dd0c202bfa2a602d","type":"file","file":"Models/Entities/Agent.md","x":-1381,"y":673,"width":400,"height":400},
+		{"id":"ab71c4ccf34e648f","type":"file","file":"Models/Entities/AgentActivityLog.md","x":-936,"y":673,"width":400,"height":400},
+		{"id":"c8d784cca5279a4e","type":"file","file":"Models/Entities/AgentAvailabilityException.md","x":-491,"y":673,"width":400,"height":400},
+		{"id":"0189f9416d1ced0a","type":"file","file":"Models/Entities/A_Entities.md","x":-1336,"y":120,"width":400,"height":50},
+		{"id":"575f61b7af0c3675","type":"file","file":"index.md","x":-160,"y":-1000,"width":420,"height":50},
+		{"id":"5eb1cd94a9cefe93","type":"file","file":"Models/Entities/Schedule.md","x":-820,"y":800,"width":400,"height":400},
+		{"id":"c4a873d6d38eb529","type":"file","file":"Models/Entities/QueueLoadTrend.md","x":-366,"y":800,"width":400,"height":400},
+		{"id":"1beb137a6415a772","type":"file","file":"Controlers/QueueController/public getQueues.md","x":1249,"y":-10,"width":400,"height":400},
+		{"id":"47fc442c4ead7803","type":"file","file":"Controlers/QueueController/QueueControler.md","x":1120,"y":-80,"width":400,"height":400},
+		{"id":"f90a75fc9b19ea3d","type":"file","file":"Controlers/ScheduleController/ScheduleController.md","x":581,"y":-10,"width":400,"height":400},
+		{"id":"78f66eea1d3be6ae","type":"file","file":"Controlers/ScheduleController/public getCalendarView.md","x":440,"y":50,"width":400,"height":400},
+		{"id":"3541f16f3d77d19f","type":"file","file":"Controlers/A_Controllers.md","x":720,"y":-760,"width":400,"height":50},
+		{"id":"b147faeb9753ebea","type":"file","file":"Models/Repositories/A_Repositories.md","x":-420,"y":-150,"width":400,"height":50},
+		{"id":"08284cb356a2a6d1","x":-844,"y":-605,"width":400,"height":50,"type":"file","file":"Models/A_Models.md"},
+		{"id":"74992c5f00c424c4","x":-46,"y":-650,"width":400,"height":50,"type":"file","file":"Services/A_Services.md"},
+		{"id":"a71f0bf7dab1a93f","type":"file","file":"Models/Entities/Queue.md","x":-1336,"y":800,"width":400,"height":400}
+	],
+	"edges":[
+		{"id":"48c08dadcffbd995","fromNode":"1beb137a6415a772","fromSide":"top","toNode":"47fc442c4ead7803","toSide":"bottom"},
+		{"id":"c6f25f5133d9e0e9","fromNode":"78f66eea1d3be6ae","fromSide":"top","toNode":"f90a75fc9b19ea3d","toSide":"left"},
+		{"id":"93106771b8ac1161","fromNode":"dd0c202bfa2a602d","fromSide":"top","toNode":"0189f9416d1ced0a","toSide":"bottom","color":"3"},
+		{"id":"bd99f63de0faf3ea","fromNode":"ab71c4ccf34e648f","fromSide":"top","toNode":"0189f9416d1ced0a","toSide":"right","color":"3"},
+		{"id":"b8942a0ca96b6688","fromNode":"c8d784cca5279a4e","fromSide":"top","toNode":"0189f9416d1ced0a","toSide":"right","color":"3"},
+		{"id":"cb0a3ec44a474c21","fromNode":"a71f0bf7dab1a93f","fromSide":"top","toNode":"0189f9416d1ced0a","toSide":"bottom","color":"3"},
+		{"id":"feedeb8d0af53fd1","fromNode":"3541f16f3d77d19f","fromSide":"top","toNode":"575f61b7af0c3675","toSide":"bottom","label":"Struct"},
+		{"id":"c7505d0209734576","fromNode":"5eb1cd94a9cefe93","fromSide":"top","toNode":"0189f9416d1ced0a","toSide":"right","color":"3"},
+		{"id":"c2382f6aebb1965f","fromNode":"c4a873d6d38eb529","fromSide":"top","toNode":"0189f9416d1ced0a","toSide":"right","color":"3"},
+		{"id":"845d42b1483b2835","fromNode":"f90a75fc9b19ea3d","fromSide":"top","toNode":"3541f16f3d77d19f","toSide":"bottom","color":"4"},
+		{"id":"29ef88e4231c90de","fromNode":"47fc442c4ead7803","fromSide":"top","toNode":"3541f16f3d77d19f","toSide":"bottom","color":"4"},
+		{"id":"d0f3e7e53b2cd456","fromNode":"0189f9416d1ced0a","fromSide":"top","toNode":"08284cb356a2a6d1","toSide":"bottom","label":"Struct"},
+		{"id":"a368d7f438359e65","fromNode":"08284cb356a2a6d1","fromSide":"top","toNode":"575f61b7af0c3675","toSide":"bottom","label":"Struct"},
+		{"id":"98eefac328f1241d","fromNode":"74992c5f00c424c4","fromSide":"top","toNode":"575f61b7af0c3675","toSide":"bottom","label":"Struct"},
+		{"id":"215091b308ee647c","fromNode":"b147faeb9753ebea","fromSide":"top","toNode":"08284cb356a2a6d1","toSide":"bottom","label":"Struct"}
+	]
+}
