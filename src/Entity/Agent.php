@@ -35,6 +35,11 @@ class Agent
     private bool $isActive = true;
 
     #[ORM\ManyToMany(targetEntity: Queue::class, inversedBy: 'agents')]
+    #[ORM\JoinTable(
+        name: 'agent_queue',
+        joinColumns: [new ORM\JoinColumn(name: 'agent_id', referencedColumnName: 'id')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'queue_id', referencedColumnName: 'id')]
+    )]
     #[Groups(['agent:read'])]
     private Collection $queues;
 

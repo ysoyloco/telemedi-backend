@@ -3,11 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Agent;
-use App\Entity\Queue;
-use App\Entity\Schedule;
 use App\Entity\AgentActivityLog;
 use App\Entity\AgentAvailabilityException;
+use App\Entity\Queue;
 use App\Entity\QueueLoadTrend;
+use App\Entity\Schedule;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -15,132 +15,275 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Utwórz kilka kolejek
-        $queues = [];
-        $queueNames = ['Obsługa klienta', 'Wsparcie techniczne', 'Sprzedaż', 'Reklamacje'];
-        
-        foreach ($queueNames as $index => $name) {
+        // 1. KOLEJKI z realistycznymi celami
+        $queues = [
+            [
+                'name' => 'Obsługa klienta',
+                'priority' => 1,
+                'description' => 'Podstawowa obsługa klientów, pytania o produkty',
+                'target_calls' => 25,
+                'target_success' => 85.00
+            ],
+            [
+                'name' => 'Wsparcie techniczne',
+                'priority' => 2, 
+                'description' => 'Pomoc techniczna, rozwiązywanie problemów',
+                'target_calls' => 15,
+                'target_success' => 75.00
+            ],
+            [
+                'name' => 'Sprzedaż',
+                'priority' => 3,
+                'description' => 'Sprzedaż produktów i usług',
+                'target_calls' => 20,
+                'target_success' => 60.00
+            ],
+            [
+                'name' => 'Reklamacje',
+                'priority' => 4,
+                'description' => 'Obsługa reklamacji i zwrotów',
+                'target_calls' => 12,
+                'target_success' => 70.00
+            ]
+        ];
+
+        $queueEntities = [];
+        foreach ($queues as $queueData) {
             $queue = new Queue();
-            $queue->setQueueName($name);
-            $queue->setPriority($index + 1);
-            $queue->setDescription('Opis kolejki ' . $name);
-            $queue->setTargetHandledCallsPerSlot(10);
-            $queue->setTargetSuccessRatePercentage(85);
-            
+            $queue->setQueueName($queueData['name']);
+            $queue->setPriority($queueData['priority']);
+            $queue->setDescription($queueData['description']);
+            $queue->setTargetHandledCallsPerSlot($queueData['target_calls']);
+            $queue->setTargetSuccessRatePercentage($queueData['target_success']);
             $manager->persist($queue);
-            $queues[] = $queue;
+            $queueEntities[] = $queue;
         }
-        
-        // Utwórz kilku agentów
-        $agents = [];
-        $agentNames = ['Jan Kowalski', 'Anna Nowak', 'Piotr Wiśniewski', 'Katarzyna Dąbrowska'];
-        
-        foreach ($agentNames as $index => $name) {
+
+        // 2. AGENCI z różnymi profilami
+        $agents = [
+            [
+                'name' => 'Jan Kowalski',
+                'email' => 'jan.kowalski@telemedi.pl',
+                'pattern' => [
+                    'Mon' => ['08:00-16:00'],
+                    'Tue' => ['08:00-16:00'],
+                    'Wed' => ['08:00-16:00'],
+                    'Thu' => ['08:00-16:00'],
+                    'Fri' => ['08:00-16:00']
+                ],
+                'profile' => 'customer_service_expert', // Expert w obsłudze klienta
+                'queues' => [0, 1] // Obsługa klienta + Wsparcie techniczne
+            ],
+            [
+                'name' => 'Anna Technow',
+                'email' => 'anna.technow@telemedi.pl',
+                'pattern' => [
+                    'Mon' => ['09:00-17:00'],
+                    'Tue' => ['09:00-17:00'],
+                    'Wed' => ['09:00-17:00'],
+                    'Thu' => ['09:00-17:00'],
+                    'Fri' => ['09:00-17:00']
+                ],
+                'profile' => 'tech_expert', // Expert w wsparciu technicznym
+                'queues' => [1, 3] // Wsparcie techniczne + Reklamacje
+            ],
+            [
+                'name' => 'Piotr Uniwersalny',
+                'email' => 'piotr.uniwersalny@telemedi.pl',
+                'pattern' => [
+                    'Mon' => ['07:00-15:00'],
+                    'Tue' => ['07:00-15:00'],
+                    'Wed' => ['07:00-15:00'],
+                    'Thu' => ['07:00-15:00'],
+                    'Fri' => ['07:00-15:00']
+                ],
+                'profile' => 'universal', // Średni wszędzie
+                'queues' => [0, 1, 2, 3] // Wszystkie kolejki
+            ],
+            [
+                'name' => 'Tomasz Sprzedawca',
+                'email' => 'tomasz.sprzedawca@telemedi.pl',
+                'pattern' => [
+                    'Mon' => ['10:00-18:00'],
+                    'Tue' => ['10:00-18:00'],
+                    'Wed' => ['10:00-18:00'],
+                    'Thu' => ['10:00-18:00'],
+                    'Fri' => ['10:00-18:00']
+                ],
+                'profile' => 'sales_expert', // Expert w sprzedaży
+                'queues' => [2, 0] // Sprzedaż + Obsługa klienta
+            ],
+            [
+                'name' => 'Maria Nowicjusz',
+                'email' => 'maria.nowicjusz@telemedi.pl',
+                'pattern' => [
+                    'Mon' => ['08:00-16:00'],
+                    'Tue' => ['08:00-16:00'],
+                    'Wed' => ['08:00-16:00'],
+                    'Thu' => ['08:00-16:00'],
+                    'Fri' => ['08:00-16:00']
+                ],
+                'profile' => 'junior', // Słaba wszędzie (nowa)
+                'queues' => [0, 2] // Obsługa klienta + Sprzedaż
+            ]
+        ];
+
+        $agentEntities = [];
+        foreach ($agents as $agentData) {
             $agent = new Agent();
-            $agent->setFullName($name);
-            $agent->setEmail(strtolower(str_replace(' ', '.', $name)) . '@example.com');
+            $agent->setFullName($agentData['name']);
+            $agent->setEmail($agentData['email']);
+            $agent->setDefaultAvailabilityPattern($agentData['pattern']);
             $agent->setIsActive(true);
             
-            // Ustaw domyślny wzorzec dostępności
-            $agent->setDefaultAvailabilityPattern([
-                'Mon' => ['08:00-16:00'],
-                'Tue' => ['08:00-16:00'],
-                'Wed' => ['08:00-16:00'],
-                'Thu' => ['08:00-16:00'],
-                'Fri' => ['08:00-16:00']
-            ]);
-            
-            // Przypisz agentowi umiejętności (obsługiwane kolejki)
-            foreach ($queues as $queueIndex => $queue) {
-                if ($index === $queueIndex || rand(0, 1)) {
-                    $agent->addQueue($queue);
-                }
+            // Przypisz kolejki
+            foreach ($agentData['queues'] as $queueIndex) {
+                $agent->addQueue($queueEntities[$queueIndex]);
             }
             
             $manager->persist($agent);
-            $agents[] = $agent;
+            $agentEntities[] = ['entity' => $agent, 'profile' => $agentData['profile']];
         }
+
+        $manager->flush();
+
+        // 3. ACTIVITY LOGI - realistyczne dane pokazujące różnice w wydajności
+        $this->createRealisticActivityLogs($manager, $agentEntities, $queueEntities);
+
+        // 4. WYJĄTKI DOSTĘPNOŚCI (urlopy)
+        $this->createAvailabilityExceptions($manager, $agentEntities);
+
+        // 5. PRZYKŁADOWE WPISY W GRAFIKU na przyszłość
+        $this->createScheduleEntries($manager, $agentEntities, $queueEntities);
+
+        // 6. TRENDY OBCIĄŻENIA KOLEJEK
+        $this->createQueueLoadTrends($manager, $queueEntities);
+
+        $manager->flush();
+    }
+
+    private function createRealisticActivityLogs(ObjectManager $manager, array $agentEntities, array $queueEntities): void
+    {
+        $startDate = new \DateTime('-60 days');
+        $endDate = new \DateTime('-1 day');
         
-        // Utwórz kilka wpisów w grafiku
-        $statuses = ['scheduled', 'completed', 'cancelled'];
-        $today = new \DateTime();
-        $schedules = [];
-        
-        for ($i = 0; $i < 20; $i++) {
-            $scheduleDate = clone $today;
-            $scheduleDate->modify('+' . rand(0, 10) . ' days');
+        // Profile skuteczności agentów w różnych kolejkach
+        $profiles = [
+            'customer_service_expert' => [
+                0 => ['success_rate' => 0.95, 'avg_duration' => 8], // Obsługa klienta - ŚWIETNY
+                1 => ['success_rate' => 0.40, 'avg_duration' => 25] // Wsparcie techniczne - SŁABY
+            ],
+            'tech_expert' => [
+                1 => ['success_rate' => 0.92, 'avg_duration' => 18], // Wsparcie techniczne - ŚWIETNY  
+                3 => ['success_rate' => 0.85, 'avg_duration' => 35]  // Reklamacje - DOBRY
+            ],
+            'universal' => [
+                0 => ['success_rate' => 0.75, 'avg_duration' => 12], // Obsługa klienta - OK
+                1 => ['success_rate' => 0.70, 'avg_duration' => 22], // Wsparcie techniczne - OK
+                2 => ['success_rate' => 0.65, 'avg_duration' => 15], // Sprzedaż - OK
+                3 => ['success_rate' => 0.72, 'avg_duration' => 28]  // Reklamacje - OK
+            ],
+            'sales_expert' => [
+                2 => ['success_rate' => 0.88, 'avg_duration' => 12], // Sprzedaż - ŚWIETNY
+                0 => ['success_rate' => 0.78, 'avg_duration' => 10]  // Obsługa klienta - DOBRY
+            ],
+            'junior' => [
+                0 => ['success_rate' => 0.35, 'avg_duration' => 18], // Obsługa klienta - SŁABY
+                2 => ['success_rate' => 0.25, 'avg_duration' => 20]  // Sprzedaż - SŁABY
+            ]
+        ];
+
+        foreach ($agentEntities as $agentData) {
+            $agent = $agentData['entity'];
+            $profile = $agentData['profile'];
             
-            $timeSlotStart = new \DateTime('08:00:00');
-            $timeSlotStart->modify('+' . rand(0, 8) . ' hours');
+            if (!isset($profiles[$profile])) continue;
             
-            $timeSlotEnd = clone $timeSlotStart;
-            $timeSlotEnd->modify('+1 hour');
-            
-            $agent = $agents[array_rand($agents)];
-            $queue = $agent->getQueues()->toArray()[array_rand($agent->getQueues()->toArray())];
-            
-            $schedule = new Schedule();
-            $schedule->setAgent($agent);
-            $schedule->setQueue($queue);
-            $schedule->setScheduleDate($scheduleDate);
-            $schedule->setTimeSlotStart($timeSlotStart);
-            $schedule->setTimeSlotEnd($timeSlotEnd);
-            $schedule->setEntryStatus($statuses[array_rand($statuses)]);
-            
-            $manager->persist($schedule);
-            $schedules[] = $schedule;
+            foreach ($profiles[$profile] as $queueIndex => $stats) {
+                $queue = $queueEntities[$queueIndex];
+                
+                // Generuj 50-100 logów dla każdego agenta w każdej kolejce
+                $logCount = rand(50, 100);
+                
+                for ($i = 0; $i < $logCount; $i++) {
+                    $log = new AgentActivityLog();
+                    $log->setAgent($agent);
+                    $log->setQueue($queue);
+                    
+                    // Losowa data z ostatnich 60 dni
+                    $randomDate = $this->randomDateBetween($startDate, $endDate);
+                    $startTime = clone $randomDate;
+                    
+                    // Czas trwania na podstawie profilu (z małą losowością)
+                    $baseDuration = $stats['avg_duration'];
+                    $duration = $baseDuration + rand(-5, 10); // +/- 5-10 minut
+                    $duration = max(2, $duration); // Minimum 2 minuty
+                    
+                    $endTime = clone $startTime;
+                    $endTime->modify("+{$duration} minutes");
+                    
+                    $log->setActivityStartDatetime($startTime);
+                    $log->setActivityEndDatetime($endTime);
+                    
+                    // Sukces na podstawie profilu
+                    $successRate = $stats['success_rate'];
+                    $wasSuccessful = (rand(1, 100) <= ($successRate * 100));
+                    $log->setWasSuccessful($wasSuccessful);
+                    
+                    $log->setActivityReferenceId('CALL_' . uniqid());
+                    
+                    $manager->persist($log);
+                }
+            }
         }
-        
-        // Utwórz kilka logów aktywności agentów
-        for ($i = 0; $i < 30; $i++) {
-            $agent = $agents[array_rand($agents)];
-            $queue = $agent->getQueues()->toArray()[array_rand($agent->getQueues()->toArray())];
-            
-            $activityStart = clone $today;
-            $activityStart->modify('-' . rand(1, 30) . ' days');
-            $activityStart->modify('+' . rand(8, 16) . ' hours');
-            
-            $activityEnd = clone $activityStart;
-            $activityEnd->modify('+' . rand(5, 30) . ' minutes');
-            
-            $wasSuccessful = (rand(0, 100) > 30); // 70% szans na sukces
-            
-            $activityLog = new AgentActivityLog();
-            $activityLog->setAgent($agent);
-            $activityLog->setQueue($queue);
-            $activityLog->setActivityStartDatetime($activityStart);
-            $activityLog->setActivityEndDatetime($activityEnd);
-            $activityLog->setWasSuccessful($wasSuccessful);
-            $activityLog->setActivityReferenceId('CALL-' . rand(10000, 99999));
-            
-            $manager->persist($activityLog);
-        }
-        
-        // Utwórz kilka wyjątków dostępności agentów (urlopy, zwolnienia, itp.)
-        for ($i = 0; $i < 10; $i++) {
-            $agent = $agents[array_rand($agents)];
-            
-            $startDate = clone $today;
-            $startDate->modify('+' . rand(1, 30) . ' days');
-            $startDate->setTime(0, 0, 0);
-            
-            $endDate = clone $startDate;
-            $endDate->modify('+' . rand(1, 7) . ' days');
-            
+    }
+
+    private function createAvailabilityExceptions(ObjectManager $manager, array $agentEntities): void
+    {
+        // Dodaj kilka urlopów/wyjątków
+        $exceptions = [
+            ['agent_index' => 0, 'start' => '+5 days 08:00', 'end' => '+7 days 16:00'], // Jan urlop
+            ['agent_index' => 1, 'start' => '+10 days 14:00', 'end' => '+10 days 17:00'], // Anna u lekarza
+            ['agent_index' => 4, 'start' => '+3 days 08:00', 'end' => '+3 days 12:00']  // Maria szkolenie
+        ];
+
+        foreach ($exceptions as $exceptionData) {
             $exception = new AgentAvailabilityException();
-            $exception->setAgent($agent);
-            $exception->setUnavailableDatetimeStart($startDate);
-            $exception->setUnavailableDatetimeEnd($endDate);
-            
+            $exception->setAgent($agentEntities[$exceptionData['agent_index']]['entity']);
+            $exception->setUnavailableDatetimeStart(new \DateTime($exceptionData['start']));
+            $exception->setUnavailableDatetimeEnd(new \DateTime($exceptionData['end']));
             $manager->persist($exception);
         }
-        
-        // Utwórz trendy obciążenia kolejek
+    }
+
+    private function createScheduleEntries(ObjectManager $manager, array $agentEntities, array $queueEntities): void
+    {
+        // Dodaj kilka przykładowych wpisów w grafiku na przyszłość
+        $schedules = [
+            ['agent' => 0, 'queue' => 0, 'date' => '+1 day', 'start' => '08:00', 'end' => '12:00'],
+            ['agent' => 1, 'queue' => 1, 'date' => '+1 day', 'start' => '09:00', 'end' => '13:00'],
+            ['agent' => 2, 'queue' => 2, 'date' => '+2 day', 'start' => '07:00', 'end' => '11:00']
+        ];
+
+        foreach ($schedules as $scheduleData) {
+            $schedule = new Schedule();
+            $schedule->setAgent($agentEntities[$scheduleData['agent']]['entity']);
+            $schedule->setQueue($queueEntities[$scheduleData['queue']]);
+            $schedule->setScheduleDate(new \DateTime($scheduleData['date']));
+            $schedule->setTimeSlotStart(new \DateTime($scheduleData['start']));
+            $schedule->setTimeSlotEnd(new \DateTime($scheduleData['end']));
+            $schedule->setEntryStatus('scheduled');
+            $manager->persist($schedule);
+        }
+    }
+
+    private function createQueueLoadTrends(ObjectManager $manager, array $queueEntities): void
+    {
         $quarters = [1, 2, 3, 4];
         $years = [date('Y') - 1, date('Y')];
         $metricNames = ['average_call_time', 'success_rate_percentage', 'calls_per_hour'];
         
-        foreach ($queues as $queue) {
+        foreach ($queueEntities as $queue) {
             foreach ($years as $year) {
                 foreach ($quarters as $quarter) {
                     foreach ($metricNames as $metricName) {
@@ -181,8 +324,12 @@ class AppFixtures extends Fixture
                 }
             }
         }
-        
-        $manager->flush();
     }
-} 
- 
+
+    private function randomDateBetween(\DateTime $start, \DateTime $end): \DateTime
+    {
+        $diff = $end->getTimestamp() - $start->getTimestamp();
+        $randomSeconds = rand(0, $diff);
+        return (clone $start)->modify("+{$randomSeconds} seconds");
+    }
+}
