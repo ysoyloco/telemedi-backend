@@ -127,13 +127,21 @@ class AgentActivityLogRepository extends ServiceEntityRepository
      * @param \DateTime|null $endDate
      * @return array
      */
-    public function getAgentAnalytics(Agent $agent, ?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function getAgentAnalytics(Agent $agent, ?\DateTimeInterface $startDate = null, ?\DateTimeInterface $endDate = null): array
     {
+        // PSEUDOKOD CO CHCEMY:
+        // 1. Pobierz wszystkie activity logi dla agenta w danym okresie
+        // 2. Pogrupuj po kolejkach 
+        // 3. Dla każdej kolejki policz:
+        //    - liczbę wszystkich aktywności
+        //    - liczbę udanych aktywności  
+        //    - średni czas trwania aktywności w sekundach
+        //    - procent sukcesu
+        
         $qb = $this->createQueryBuilder('a')
-            ->select('q.queueName, COUNT(a.id) as totalActivities, SUM(CASE WHEN a.wasSuccessful = true THEN 1 ELSE 0 END) as successfulActivities')
+            ->select('a, q')
             ->join('a.queue', 'q')
             ->where('a.agent = :agent')
-            ->groupBy('q.id')
             ->setParameter('agent', $agent);
         
         if ($startDate) {
@@ -142,88 +150,57 @@ class AgentActivityLogRepository extends ServiceEntityRepository
         }
         
         if ($endDate) {
-            $qb->andWhere('a.activityEndDatetime <= :endDate')
+            $qb->andWhere('a.activityStartDatetime <= :endDate')
                ->setParameter('endDate', $endDate);
         }
         
-        $results = $qb->getQuery()->getArrayResult();
+        $logs = $qb->getQuery()->getResult();
         
-        // Oblicz średni czas obsługi
-        $avgTimeQb = $this->createQueryBuilder('a')
-            ->select('q.queueName, AVG(TIMESTAMPDIFF(SECOND, a.activityStartDatetime, a.activityEndDatetime)) as avgDuration')
-            ->join('a.queue', 'q')
-            ->where('a.agent = :agent')
-            ->groupBy('q.id')
-            ->setParameter('agent', $agent);
+        // Grupowanie i kalkulacje w PHP
+        $analytics = [];
+        $queueGroups = [];
         
-        if ($startDate) {
-            $avgTimeQb->andWhere('a.activityStartDatetime >= :startDate')
-                     ->setParameter('startDate', $startDate);
+        // Grupuj po kolejkach
+        foreach ($logs as $log) {
+            $queueName = $log->getQueue()->getQueueName();
+            if (!isset($queueGroups[$queueName])) {
+                $queueGroups[$queueName] = [];
+            }
+            $queueGroups[$queueName][] = $log;
         }
         
-        if ($endDate) {
-            $avgTimeQb->andWhere('a.activityEndDatetime <= :endDate')
-                     ->setParameter('endDate', $endDate);
-        }
-        
-        $avgTimeResults = $avgTimeQb->getQuery()->getArrayResult();
-        
-        // Połącz wyniki
-        $queuesData = [];
-        foreach ($results as $result) {
-            $queueName = $result['queueName'];
-            $successRate = $result['totalActivities'] > 0 
-                ? round(($result['successfulActivities'] / $result['totalActivities']) * 100, 2)
-                : 0;
+        // Policz statystyki dla każdej kolejki
+        foreach ($queueGroups as $queueName => $queueLogs) {
+            $totalActivities = count($queueLogs);
+            $successfulActivities = 0;
+            $totalDurationSeconds = 0;
             
-            $queuesData[$queueName] = [
-                'totalActivities' => $result['totalActivities'],
-                'successfulActivities' => $result['successfulActivities'],
-                'successRate' => $successRate,
-                'avgDuration' => 0
+            foreach ($queueLogs as $log) {
+                if ($log->isWasSuccessful()) {
+                    $successfulActivities++;
+                }
+                
+                // Policz czas trwania w sekundach
+                if ($log->getActivityStartDatetime() && $log->getActivityEndDatetime()) {
+                    $duration = $log->getActivityEndDatetime()->getTimestamp() - 
+                               $log->getActivityStartDatetime()->getTimestamp();
+                    $totalDurationSeconds += $duration;
+                }
+            }
+            
+            $avgDurationSeconds = $totalActivities > 0 ? $totalDurationSeconds / $totalActivities : 0;
+            $successRate = $totalActivities > 0 ? ($successfulActivities / $totalActivities) * 100 : 0;
+            
+            $analytics[] = [
+                'queue_name' => $queueName,
+                'total_activities' => $totalActivities,
+                'successful_activities' => $successfulActivities,
+                'success_rate_percentage' => round($successRate, 2),
+                'average_duration_seconds' => round($avgDurationSeconds, 2)
             ];
         }
         
-        foreach ($avgTimeResults as $avgTime) {
-            $queueName = $avgTime['queueName'];
-            if (isset($queuesData[$queueName])) {
-                $queuesData[$queueName]['avgDuration'] = round($avgTime['avgDuration']);
-            }
-        }
-        
-        // Oblicz ogólne statystyki
-        $totalActivities = 0;
-        $totalSuccessful = 0;
-        $weightedAvgDuration = 0;
-        $totalWeight = 0;
-        
-        foreach ($queuesData as $data) {
-            $totalActivities += $data['totalActivities'];
-            $totalSuccessful += $data['successfulActivities'];
-            $weightedAvgDuration += $data['avgDuration'] * $data['totalActivities'];
-            $totalWeight += $data['totalActivities'];
-        }
-        
-        $overallSuccessRate = $totalActivities > 0 ? round(($totalSuccessful / $totalActivities) * 100, 2) : 0;
-        $overallAvgDuration = $totalWeight > 0 ? round($weightedAvgDuration / $totalWeight) : 0;
-        
-        return [
-            'agent' => [
-                'id' => $agent->getId(),
-                'fullName' => $agent->getFullName(),
-            ],
-            'period' => [
-                'startDate' => $startDate ? $startDate->format('Y-m-d') : null,
-                'endDate' => $endDate ? $endDate->format('Y-m-d') : null,
-            ],
-            'overall' => [
-                'totalActivities' => $totalActivities,
-                'successfulActivities' => $totalSuccessful,
-                'successRate' => $overallSuccessRate,
-                'avgDuration' => $overallAvgDuration,
-            ],
-            'queues' => $queuesData,
-        ];
+        return $analytics;
     }
 } 
  

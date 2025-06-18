@@ -1,0 +1,1014 @@
+{
+	"info": {
+		"_postman_id": "49b76c2a-5f81-4c1d-97fe-8b7df15f9cef",
+		"name": "Call Center API",
+		"description": "API do zarządzania grafikiem Call Center z kontrolerami dla Agentów, Kolejek, Harmonogramów i innych funkcjonalności.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Agents",
+			"description": "Operacje dotyczące agentów call center",
+			"item": [
+				{
+					"name": "Get All Agents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents"
+							]
+						},
+						"description": "Pobiera listę wszystkich agentów"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agents/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"1"
+							]
+						},
+						"description": "Pobiera szczegóły jednego agenta według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Agent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"Nowy Agent\",\n    \"email\": \"nowy.agent@example.com\",\n    \"defaultAvailabilityPattern\": {\n        \"Mon\": [\"08:00-16:00\"],\n        \"Tue\": [\"08:00-16:00\"],\n        \"Wed\": [\"08:00-16:00\"],\n        \"Thu\": [\"08:00-16:00\"],\n        \"Fri\": [\"08:00-16:00\"]\n    },\n    \"isActive\": true,\n    \"queues\": [1, 2]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/agents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents"
+							]
+						},
+						"description": "Tworzy nowego agenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Agent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"Zaktualizowany Agent\",\n    \"email\": \"zaktualizowany.agent@example.com\",\n    \"defaultAvailabilityPattern\": {\n        \"Mon\": [\"09:00-17:00\"],\n        \"Tue\": [\"09:00-17:00\"],\n        \"Wed\": [\"09:00-17:00\"],\n        \"Thu\": [\"09:00-17:00\"],\n        \"Fri\": [\"09:00-17:00\"]\n    },\n    \"isActive\": true,\n    \"queues\": [1, 3]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/agents/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"1"
+							]
+						},
+						"description": "Aktualizuje istniejącego agenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Agent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agents/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"1"
+							]
+						},
+						"description": "Usuwa agenta według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent Queues",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agents/1/queues",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"1",
+								"queues"
+							]
+						},
+						"description": "Pobiera listę kolejek przypisanych do agenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Agents for Period",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agents/available/for-period?start_date=2025-01-20&end_date=2025-01-21&queue_id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agents",
+								"available",
+								"for-period"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2025-01-20"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-01-21"
+								},
+								{
+									"key": "queue_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Pobiera listę dostępnych agentów w danym okresie dla określonej kolejki"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agent Activity Logs",
+			"description": "Operacje dotyczące logów aktywności agentów",
+			"item": [
+				{
+					"name": "Get All Activity Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-activity-logs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-activity-logs"
+							]
+						},
+						"description": "Pobiera listę wszystkich logów aktywności agentów"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Activity Log by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-activity-logs/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-activity-logs",
+								"1"
+							]
+						},
+						"description": "Pobiera szczegóły logu aktywności według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Activity Log",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agentId\": 1,\n    \"queueId\": 1,\n    \"activityStartDatetime\": \"2025-06-10T10:00:00\",\n    \"activityEndDatetime\": \"2025-06-10T10:15:00\",\n    \"wasSuccessful\": true,\n    \"activityReferenceId\": \"CALL-123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-activity-logs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-activity-logs"
+							]
+						},
+						"description": "Tworzy nowy log aktywności agenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Activity Log",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agentId\": 1,\n    \"queueId\": 1,\n    \"activityStartDatetime\": \"2025-06-10T10:00:00\",\n    \"activityEndDatetime\": \"2025-06-10T10:20:00\",\n    \"wasSuccessful\": false,\n    \"activityReferenceId\": \"CALL-123456-UPDATED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-activity-logs/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-activity-logs",
+								"1"
+							]
+						},
+						"description": "Aktualizuje istniejący log aktywności"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Activity Log",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-activity-logs/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-activity-logs",
+								"1"
+							]
+						},
+						"description": "Usuwa log aktywności według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent Activity Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-activity-logs/analytics/agent/1?start_date=2025-01-01&end_date=2025-01-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-activity-logs",
+								"analytics",
+								"agent",
+								"1"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-01-31"
+								}
+							]
+						},
+						"description": "Pobiera analityki aktywności dla konkretnego agenta"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agent Availability Exceptions",
+			"description": "Operacje dotyczące wyjątków dostępności agentów",
+			"item": [
+				{
+					"name": "Get All Availability Exceptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-availability-exceptions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-availability-exceptions"
+							]
+						},
+						"description": "Pobiera listę wszystkich wyjątków dostępności agentów"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Availability Exception by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-availability-exceptions/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-availability-exceptions",
+								"1"
+							]
+						},
+						"description": "Pobiera szczegóły wyjątku dostępności według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Availability Exception",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agent_id\": 1,\n    \"unavailableDatetimeStart\": \"2025-06-15T09:00:00\",\n    \"unavailableDatetimeEnd\": \"2025-06-15T17:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-availability-exceptions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-availability-exceptions"
+							]
+						},
+						"description": "Tworzy nowy wyjątek dostępności dla agenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Availability Exception",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agent_id\": 1,\n    \"unavailableDatetimeStart\": \"2025-06-15T10:00:00\",\n    \"unavailableDatetimeEnd\": \"2025-06-15T18:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-availability-exceptions/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-availability-exceptions",
+								"1"
+							]
+						},
+						"description": "Aktualizuje istniejący wyjątek dostępności"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Availability Exception",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-availability-exceptions/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-availability-exceptions",
+								"1"
+							]
+						},
+						"description": "Usuwa wyjątek dostępności według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Agent Availability",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/agent-availability-exceptions/check/availability?agent_id=1&datetime=2025-01-20T10:00:00",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"agent-availability-exceptions",
+								"check",
+								"availability"
+							],
+							"query": [
+								{
+									"key": "agent_id",
+									"value": "1"
+								},
+								{
+									"key": "datetime",
+									"value": "2025-01-20T10:00:00"
+								}
+							]
+						},
+						"description": "Sprawdza dostępność agenta w określonym czasie"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Queues",
+			"description": "Operacje dotyczące kolejek call center",
+			"item": [
+				{
+					"name": "Get All Queues",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queues",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queues"
+							]
+						},
+						"description": "Pobiera listę wszystkich kolejek posortowanych według priorytetu"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Queue by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queues/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queues",
+								"1"
+							]
+						},
+						"description": "Pobiera szczegóły kolejki według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Queue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"queue_name\": \"Nowa kolejka\",\n    \"priority\": 5,\n    \"description\": \"Opis nowej kolejki\",\n    \"target_handled_calls_per_slot\": 12,\n    \"target_success_rate_percentage\": 90.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/queues",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queues"
+							]
+						},
+						"description": "Tworzy nową kolejkę"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Queue",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"queue_name\": \"Zaktualizowana kolejka\",\n    \"priority\": 6,\n    \"description\": \"Zaktualizowany opis kolejki\",\n    \"target_handled_calls_per_slot\": 15,\n    \"target_success_rate_percentage\": 95.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/queues/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queues",
+								"1"
+							]
+						},
+						"description": "Aktualizuje istniejącą kolejkę"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Queue",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queues/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queues",
+								"1"
+							]
+						},
+						"description": "Usuwa kolejkę według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Queue Agents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queues/1/agents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queues",
+								"1",
+								"agents"
+							]
+						},
+						"description": "Pobiera listę agentów przypisanych do kolejki"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Queue Load Trends",
+			"description": "Operacje dotyczące trendów obciążenia kolejek",
+			"item": [
+				{
+					"name": "Get All Queue Load Trends",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queue-load-trends",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queue-load-trends"
+							]
+						},
+						"description": "Pobiera listę wszystkich trendów obciążenia kolejek"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Queue Load Trend by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queue-load-trends/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queue-load-trends",
+								"1"
+							]
+						},
+						"description": "Pobiera szczegóły trendu obciążenia kolejki według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Queue Load Trend",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"queue_id\": 1,\n    \"year\": 2025,\n    \"quarter\": 1,\n    \"metricName\": \"average_call_duration\",\n    \"metricValue\": \"245.5\",\n    \"additionalDescription\": \"Średni czas obsługi połączenia w sekundach\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/queue-load-trends",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queue-load-trends"
+							]
+						},
+						"description": "Tworzy nowy trend obciążenia kolejki"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Queue Load Trend",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"queue_id\": 1,\n    \"year\": 2025,\n    \"quarter\": 1,\n    \"metricName\": \"average_call_duration\",\n    \"metricValue\": \"250.0\",\n    \"additionalDescription\": \"Zaktualizowany średni czas obsługi połączenia\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/queue-load-trends/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queue-load-trends",
+								"1"
+							]
+						},
+						"description": "Aktualizuje istniejący trend obciążenia"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Queue Load Trend",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queue-load-trends/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queue-load-trends",
+								"1"
+							]
+						},
+						"description": "Usuwa trend obciążenia według ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Queue Metrics Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/queue-load-trends/analytics/queue/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"queue-load-trends",
+								"analytics",
+								"queue",
+								"1"
+							]
+						},
+						"description": "Pobiera analityki metryk dla konkretnej kolejki"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schedules",
+			"description": "Operacje dotyczące harmonogramów pracy agentów",
+			"item": [
+				{
+					"name": "Get All Schedules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/schedules",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"schedules"
+							]
+						},
+						"description": "Pobiera listę wszystkich wpisów w harmonogramie"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Schedules with Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/schedules?agent_id=1&queue_id=1&start_date=2025-01-20&end_date=2025-01-21",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"schedules"
+							],
+							"query": [
+								{
+									"key": "agent_id",
+									"value": "1"
+								},
+								{
+									"key": "queue_id",
+									"value": "1"
+								},
+								{
+									"key": "start_date",
+									"value": "2025-01-20"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-01-21"
+								}
+							]
+						},
+						"description": "Pobiera harmonogram z filtrami dla agenta, kolejki i zakresu dat"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Calendar View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/calendar-view?start_date=2025-01-20&end_date=2025-01-27&queue_id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"calendar-view"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2025-01-20"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-01-27"
+								},
+								{
+									"key": "queue_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Pobiera dane dla widoku kalendarza harmonogramu"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Slot Proposals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/slot-proposals?queue_id=1&slot_start_datetime=2025-01-20T10:00:00&slot_end_datetime=2025-01-20T11:00:00",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"slot-proposals"
+							],
+							"query": [
+								{
+									"key": "queue_id",
+									"value": "1"
+								},
+								{
+									"key": "slot_start_datetime",
+									"value": "2025-01-20T10:00:00"
+								},
+								{
+									"key": "slot_end_datetime",
+									"value": "2025-01-20T11:00:00"
+								}
+							]
+						},
+						"description": "Pobiera propozycje agentów dla wybranego slotu czasowego"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Schedule Entry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agent_id\": 1,\n    \"queue_id\": 1,\n    \"schedule_date\": \"2025-01-20\",\n    \"time_slot_start\": \"10:00:00\",\n    \"time_slot_end\": \"11:00:00\",\n    \"entry_status\": \"scheduled\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/schedules",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"schedules"
+							]
+						},
+						"description": "Tworzy nowy wpis w harmonogramie"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Schedule Entry",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agent_id\": 1,\n    \"queue_id\": 1,\n    \"schedule_date\": \"2025-01-20\",\n    \"time_slot_start\": \"10:00:00\",\n    \"time_slot_end\": \"12:00:00\",\n    \"entry_status\": \"completed\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/schedules/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"schedules",
+								"1"
+							]
+						},
+						"description": "Aktualizuje istniejący wpis w harmonogramie"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Schedule Entry",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/schedules/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"schedules",
+								"1"
+							]
+						},
+						"description": "Usuwa wpis z harmonogramu według ID"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

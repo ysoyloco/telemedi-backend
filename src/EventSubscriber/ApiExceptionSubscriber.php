@@ -19,7 +19,7 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        $request = $event->getRequest();
+        /*$request = $event->getRequest();
         
         // Obsługuj tylko żądania do /api
         if (!str_starts_with($request->getPathInfo(), '/api')) {
@@ -45,7 +45,8 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
             'message' => $exception->getMessage()
         ]);
 
-        $event->setResponse($response);
+        $event->setResponse($response);*/
+        return;
     }
 
     private function getErrorMessage(\Throwable $exception): string

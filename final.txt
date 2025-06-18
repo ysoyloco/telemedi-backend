@@ -1,0 +1,143 @@
+PHPUnit 12.2.1 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.1
+Configuration: /home/jake/Projekty/telemedibak/tele-backend/api_project/phpunit.dist.xml
+
+FF.FF.F.F.......FF.                                               19 / 19 (100%)
+
+Time: 00:00.269, Memory: 40.50 MB
+
+Agent Activity Log Controller (App\Tests\Controller\AgentActivityLogController)
+ ✘ Get all activity logs
+   │
+   │ Failed asserting that actual size 64 matches expected size 80.
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/AgentActivityLogControllerTest.php:17
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✘ Get activity logs with filters
+   │
+   │ Failed asserting that actual size 14 matches expected size 10.
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/AgentActivityLogControllerTest.php:31
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✔ Create activity log
+
+Agent Controller (App\Tests\Controller\AgentController)
+ ✘ Get all agents
+   │
+   │ Failed asserting that two strings are equal.
+   │ --- Expected
+   │ +++ Actual
+   │ @@ @@
+   │ -'Marek Testowy'
+   │ +'Marek Zaktualizowany'
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/AgentControllerTest.php:20
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✘ Get agent by id
+   │
+   │ Failed asserting that two strings are equal.
+   │ --- Expected
+   │ +++ Actual
+   │ @@ @@
+   │ -'Marek Testowy'
+   │ +'Marek Zaktualizowany'
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/AgentControllerTest.php:32
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✔ Get agent not found
+ ✘ Create agent
+   │
+   │ Failed asserting that the Response status code is 201.
+   │ HTTP/1.1 500 Internal Server Error
+   │ Cache-Control: no-cache, private
+   │ Content-Type:  application/json
+   │ Date:          Mon, 16 Jun 2025 01:38:06 GMT
+   │ X-Robots-Tag:  noindex
+   │
+   │ {"error":"Wyst\u0105pi\u0142 b\u0142\u0105d","reason_code":"INTERNAL_SERVER_ERROR","message":"An exception occurred while executing a query: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry \u0027nowy.agent@example.com\u0027 for key \u0027UNIQ_268B9C9DE7927C74\u0027"}
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:148
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:38
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/AgentControllerTest.php:58
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✔ Update agent
+ ✘ Delete agent
+   │
+   │ Failed asserting that the Response status code is 204.
+   │ HTTP/1.1 404 Not Found
+   │ Cache-Control: no-cache, private
+   │ Content-Type:  application/json
+   │ Date:          Mon, 16 Jun 2025 01:38:06 GMT
+   │ X-Robots-Tag:  noindex
+   │
+   │ {"message":"Agent not found"}
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:148
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:38
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/AgentControllerTest.php:88
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✔ Get agent queues
+
+Queue Controller (App\Tests\Controller\QueueController)
+ ✔ Get all queues
+ ✔ Queue structure
+
+Schedule Controller (App\Tests\Controller\ScheduleController)
+ ✔ Get schedules
+ ✔ Get calendar view
+ ✔ Get calendar view missing params
+ ✔ Get slot proposals
+ ✘ Create schedule entry
+   │
+   │ Failed asserting that the Response status code is 201.
+   │ HTTP/1.1 409 Conflict
+   │ Cache-Control: no-cache, private
+   │ Content-Type:  application/json
+   │ Date:          Mon, 16 Jun 2025 01:38:06 GMT
+   │ X-Robots-Tag:  noindex
+   │
+   │ {"error":"Konflikt danych","reason_code":"DATA_CONFLICT","message":"Agent Marek Zaktualizowany jest niedost\u0119pny w tym czasie. Pow\u00f3d: Poza standardowymi godzinami pracy"}
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:148
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:38
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/ScheduleControllerTest.php:82
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✘ Update schedule entry
+   │
+   │ Failed asserting that the Response is successful.
+   │ HTTP/1.1 404 Not Found
+   │ Cache-Control: no-cache, private
+   │ Content-Type:  application/json
+   │ Date:          Mon, 16 Jun 2025 01:38:06 GMT
+   │ X-Robots-Tag:  noindex
+   │
+   │ {"error":"Nie znaleziono zasobu","reason_code":"RESOURCE_NOT_FOUND","message":"No route found for \u0022PUT http:\/\/localhost\/api\/schedules\/\u0022 (from \u0022http:\/\/localhost\/api\/schedules\u0022)"}
+   │
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:148
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/symfony/framework-bundle/Test/BrowserKitAssertionsTrait.php:33
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/tests/Controller/ScheduleControllerTest.php:116
+   │ /home/jake/Projekty/telemedibak/tele-backend/api_project/vendor/phpunit/phpunit/phpunit:104
+   │
+ ✔ Delete schedule entry
+
+FAILURES!
+Tests: 19, Assertions: 50, Failures: 8.
+
+Remaining indirect deprecation notices (19)
+
+  19x: Version detection logic for MySQL will change in DBAL 4. Please specify the version as the server reports it, e.g. "10.9.3-MariaDB" instead of "mariadb-10.9". (AbstractMySQLDriver.php:171 called by AbstractMySQLDriver.php:44, https://github.com/doctrine/dbal/pull/5779, package doctrine/orm)
+    2x in ScheduleControllerTest::testDeleteScheduleEntry from App\Tests\Controller
+    1x in AgentActivityLogControllerTest::testGetAllActivityLogs from App\Tests\Controller
+    1x in AgentActivityLogControllerTest::testGetActivityLogsWithFilters from App\Tests\Controller
+    1x in AgentActivityLogControllerTest::testCreateActivityLog from App\Tests\Controller
+    1x in AgentControllerTest::testGetAllAgents from App\Tests\Controller
+    ...
+

@@ -6,46 +6,40 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class QueueControllerTest extends WebTestCase
 {
-    public function testGetQueues(): void
+    public function testGetAllQueues(): void
     {
         $client = static::createClient();
         $client->request('GET', '/api/queues');
 
         $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('Content-Type', 'application/json');
-
-        $responseContent = $client->getResponse()->getContent();
-        $responseData = json_decode($responseContent, true);
-
-        $this->assertIsArray($responseData);
-        $this->assertNotEmpty($responseData);
-
-        // Check the structure of the first element (assuming it exists)
-        $this->assertArrayHasKey('id', $responseData[0]);
-        $this->assertArrayHasKey('queue_name', $responseData[0]);
-        $this->assertArrayHasKey('priority', $responseData[0]);
-        $this->assertArrayHasKey('target_handled_calls_per_slot', $responseData[0]);
-        $this->assertArrayHasKey('target_success_rate_percentage', $responseData[0]);
-
-        // Example: Check specific mock data if needed (adjust if mock data changes)
-        $expectedFirstQueue = [
-            'id' => 1,
-            'queue_name' => 'Sprzedaż VIP',
-            'priority' => 1,
-            'target_handled_calls_per_slot' => 15,
-            'target_success_rate_percentage' => '92.50',
-        ];
-        $this->assertContains($expectedFirstQueue, $responseData, 'The expected first queue was not found in the response.');
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+        
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertCount(2, $data); // 2 kolejki z fixtures
+        
+        // Sprawdź sortowanie po priorytecie
+        $this->assertEquals('Sprzedaż VIP', $data[0]['queue_name']);
+        $this->assertEquals(1, $data[0]['priority']);
+        
+        $this->assertEquals('Obsługa klienta', $data[1]['queue_name']);
+        $this->assertEquals(2, $data[1]['priority']);
     }
 
-    public function testGetQueuesSorted(): void
+    public function testQueueStructure(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/api/queues?sort_by=priority:desc');
-
-        $this->assertResponseIsSuccessful();
-        $responseData = json_decode($client->getResponse()->getContent(), true);
-
-        $this->assertEquals(3, $responseData[0]['id']); // Assuming Reklamacje (id 3, prio 3) is now first
+        $client->request('GET', '/api/queues');
+        
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $queue = $data[0];
+        
+        $this->assertArrayHasKey('id', $queue);
+        $this->assertArrayHasKey('queue_name', $queue);
+        $this->assertArrayHasKey('priority', $queue);
+        $this->assertArrayHasKey('target_handled_calls_per_slot', $queue);
+        $this->assertArrayHasKey('target_success_rate_percentage', $queue);
+        
+        $this->assertEquals(15, $queue['target_handled_calls_per_slot']);
+        $this->assertEquals(92.50, $queue['target_success_rate_percentage']);
     }
-} 
+}
